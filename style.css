@@ -24,7 +24,7 @@ html {
 
 body {
     padding: 1em;
-    background-color: var(--base-color)
+    background-color: var(--primary-color)
 }
 
 h1, h2, h3 {
