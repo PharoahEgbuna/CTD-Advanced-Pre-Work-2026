@@ -2,7 +2,6 @@ function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
-
 async function generateRandomArt() {
 
     // Fetch the total number of pages from the API
@@ -18,6 +17,7 @@ async function generateRandomArt() {
     try {
         //Attempt to fetch a page of artworks, 12 total, using the random page number
         response = await fetch(`https://api.artic.edu/api/v1/artworks?page=${random_page_num}&limit=12&fields=id%2Ctitle%2Cartist_display%2Cimage_id%2Cplace_of_origin%2Cshort_description`);
+        response = await response.json();
         
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
@@ -26,11 +26,11 @@ async function generateRandomArt() {
         console.error(error.message);
     }
 
-    //Convert the response to JSON
-    result = await response.json();
-
     //Select a random artwork from the 12 artworks on the page
-    artWork = result.data[random_art_num];
+    artWork = response.data[random_art_num];
+
+    //Get the image URL for the artwork.
+    let imageURL =  await fetch(`https://www.artic.edu/iiif/2/${artWork.image_id}/full/843,/0/default.jpg`);
 
     //Get the image, title, artist, description elements from artgenerator.html
     let image = document.getElementById("art-image");
@@ -38,12 +38,13 @@ async function generateRandomArt() {
     let artist = document.getElementById("artist");
     let description = document.getElementById("description");
 
-    //Check if the artwork has a value for image_id, title, artist, and description. Provide alternative values if not. 
-    if (!artWork.image_id ) {
+    //Check if the artwork has values for image_id, title, artist, and description. Also check if the imageURL is valid. Provide alternative values if not. 
+    if (!imageURL.ok || !artWork.image_id) {
         image.src = "images/no_picture_available.png";
-        image.alt_text = "No image available.";
+        image.alt_text = "No image available."; 
     } else {
         image.src = `https://www.artic.edu/iiif/2/${artWork.image_id}/full/843,/0/default.jpg`;
+        image.title = artWork.title;
     }
     
     if (!artWork.title) {
