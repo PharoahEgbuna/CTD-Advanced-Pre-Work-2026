@@ -9,36 +9,58 @@ async function generateRandomArt() {
     const total_pages =  await fetch("https://api.artic.edu/api/v1/artworks")
     .then(response => response.json().then(data => data.pagination.total_pages));
 
+    // Generate a random page number and a random integer.
     let random_page_num = getRndInteger(1, total_pages);
     let random_art_num = getRndInteger(1, 12);
 
     let response;
 
     try {
-        //Attempt to fetch a random page of artworks with a limit of 12 items per page
+        //Attempt to fetch a page of artworks, 12 total, using the random page number
         response = await fetch(`https://api.artic.edu/api/v1/artworks?page=${random_page_num}&limit=12&fields=id%2Ctitle%2Cartist_display%2Cimage_id%2Cplace_of_origin%2Cshort_description`);
         
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
-
     } catch (error) {
         console.error(error.message);
     }
 
+    //Convert the response to JSON
     result = await response.json();
-    getArtPiece = result.data[random_art_num];
 
-    console.log(getArtPiece.image_id);
-    let art_image = document.getElementById("art-image");
-    let art_title = document.getElementById("art-title");
+    //Select a random artwork from the 12 artworks on the page
+    artWork = result.data[random_art_num];
+
+    //Get the image, title, artist, description elements from artgenerator.html
+    let image = document.getElementById("art-image");
+    let title = document.getElementById("art-title");
     let artist = document.getElementById("artist");
+    let description = document.getElementById("description");
 
-    art_image.src = `https://www.artic.edu/iiif/2/${getArtPiece.image_id}/full/843,/0/default.jpg`;
-    art_title.textContent = `"${getArtPiece.title}"`;
-    artist.textContent = getArtPiece.artist_display;
+    //Check if the artwork has a value for image_id, title, artist, and description. Provide alternative values if not. 
+    if (!artWork.image_id ) {
+        image.src = "images/no_picture_available.png";
+        image.alt_text = "No image available.";
+    } else {
+        image.src = `https://www.artic.edu/iiif/2/${artWork.image_id}/full/843,/0/default.jpg`;
+    }
+    
+    if (!artWork.title) {
+        title.textContent = "Title unknown.";
+    } else {
+        title.textContent = `"${artWork.title}"`;
+    }
+    
+    if (!artWork.artist_display) {
+        artist.textContent = "Artist unknown.";
+    } else {
+        artist.textContent = artWork.artist_display;
+    }
+
+    if (!artWork.short_description) {
+        description.textContent = "No description available.";
+    } else {
+        description.textContent = artWork.short_description;
+    }
 }
-
-generateRandomArt();
-
-
