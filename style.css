@@ -125,3 +125,7 @@ section p {
     margin-top: 1em;
     font-size: 1.25rem;
 }
+
+button:hover {
+  cursor: pointer;
+}   
