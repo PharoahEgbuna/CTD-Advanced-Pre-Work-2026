@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/productlist.js" defer></script>
+</head>
+<body>
+    <header> 
+        <nav>
+            <ul>
+                <li><h2>Pharoah's Pre-Work</h2></li> 
+                <li><a href="index.html">Home</a></li>
+                <li><a href="artgenerator.html">Art Generator</a></li>
+            </ul>
+        </nav>
+        <div class="flex-container">
+            <div class="text-container">
+                <p><strong>View products sold by the Chicago Art Institute!</strong></p>
+                <a href="" class="cta-button">Follow me on Github</a>
+                <a href=""class="cta-button secondary">See more of my work</a>
+            </div>
+        </div>
+        <button class="cta-button" onclick="nextPage()" id="nextpage" >Next Page</button>
+        <button class="cta-button" onclick="previousPage()" id="previouspage" style="display:none;">Previous Page</button>
+        <div class="flex-container">
+            <ul class="productlist">
+            </ul>
+        </div>
+    </header>
+</body>
+</html>
